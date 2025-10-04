@@ -1,4 +1,4 @@
-# ToDo List Statemachine - XState - _Full Stack Project_
+# ToDo List Statemachine - _Full Stack Project_
 
 This project is a demonstration of a reactive UI driven by a state machine using **XState v5** library. It's a simple To-Do list application where the entire application flow—from loading data to creating, and deleting items—is managed and orchestrated by a **statechart**.
 
