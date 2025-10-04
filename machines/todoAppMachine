@@ -1,0 +1,97 @@
+import { createMachine, assign } from "xstate";
+
+const todoAppMachine = createMachine({
+  /** @xstate-layout N4IgpgJg5mDOIC5QBUD2ARVACAsgQwGMALASwDswA6AGVTwnKizU1gGIJULLyA3VANZUW2fMXJVa9RswypYCPqgJ4ALiS4BtAAwBdHbsSgADvJLquRkAA9EAJm0BmSgE47AVgDsnx4-cfHAEYAGhAAT0QANgAWSgAOF0c7QI9POKDPdxcAX2zQkVxCUm4pBjImEXYwACdq1GrKYwAbNQAzeoBbSgKxYsk6Moq5BSUVCzIDAytTWHMNMitbBEcXSMpA6LtPOxjPN20Q8MQAWkCXT1d3aLj3bTtHaMfN3Py5QvFuSqxSyDYAYWqYDUYCwFAA7lMkCAZnNLFClnZYllAht7oFtNFPNpEqEIggztpXJjHo5tHFogcdpEXiAekUJN1ht8Br90GAmmBVGBISYzONFohNpRkajHHtIpE4oFHLjEH5hS4XAk7Fs4tp3JEttEaXSPlQAUD1OVQWAwbJMJQAMpEVBgmTtaodLDkYwAV1UbAAYp1nWQ3aosMQ8OVIDzoXz5gKENtKA4gltAu4UYlPIc8e4HsLrtpIu4snZzhmdW9egyDWoZODzagrTa7caHU6Xe62JbXQAjDrmMMw-nw+yJdYebR3RPJsWy5YS9aRNJeDyraKBTzFzDvPqUctGphVkRWvC8GQiDhcKhKISMtel7hbyum6v7w-GkSKMj8MbzSZ6aYRuGgJbRC4hIHO4cRYlS2KgZOKQuJQjhSoEkQokkbipo4q6iPSN6AhWxq7nIj5HnIbA1HUDTNG0nSXpheqbjh24mmae6WgeRGYK+74Vloeg9r+Cz9ggmyEv4DwFpicQSt4k6YnYM5ztsWQxGc7gYeuDJshyDHHpw3DnsIJZYVQGmcmxqAccoXETDx35Qr2kYCQ4sRisSaR2HEiISdEk7HJ4sTkncdz3DmoGBKp15GeyJnPsRpH1I0LSqI21FqdwxlaXI5kftx+g2bysx9v+iDuJQ6qJOqkSrKs2IPN5ZwXC4Vzkkm1yBFKblhYZlBpTIACitT1L81iwKowKUHgrRctUAAUw7aAAlGwuobt1xp9WRoa5eG+X2YVCCnCsrhuCsjyagW5zeXmsbwbm0QVWSMRASpeS0gZtErUwa0DRArbGGAkBYAAqsYvHbX+NgnA4sFpJiSpKoiKSIZO8pZLDKppOVWodbRpSmewOlnm+gj6VenU49FrCZZZkyBIYtl8VGDjFUEkQrOk5I+HcMpHPibiUI8vmbDsCRxOkK40mQqAQHAVhLRIP6g-xu3HKklDQ3swvw8kkTeX4fkuIBWTaApGrqljG5k0MrDy7Civg8sSrCtiLjSm4DWIZ42vc8cirxBSDjLqVFLROhz2y58TI-BA1sFXbiGxvcDWARJZI+DE0FbPECFIYhjzonYZsMhb1awFgsWAlHdMK1GjgVa47sBCLvlQV7OwXMdDXeEBiHktSoevRut54feIjRztduIrGTgpKmSZnGKKSTq3ck3Api6tQX2GGneTEEdatr2j6zaqKPYNLAkriRNVqyzymaZytO7srwuSli68JO0YPO7D7vrHk6gJ+2wAh4YU8Z-Bjjnp4JGVxKCSSfopJccQN4RU0qZABUZjjFSNgWZSEpnZgQ1N5H2-kzgShId4Isfd37LUigxT65c0ECTOEOVYy4u4xCSFzPEytZxwX1g1LYThHq3VyLkIAA */
+  id: "ToDo Machine",
+  initial: "Loading ToDos",
+  context: {
+    todos: [],
+    error: null,
+    createNewFormInput: "",
+  },
+  states: {
+    "Loading ToDos": {
+      invoke: {
+        src: "loadTodos",
+        onDone: [{
+          target: "ToDos Loaded",
+          actions: "assignTodosToContext",
+          guard: "Has ToDos"
+        }, {
+          target: "Creating new ToDo",
+          reenter: true
+        }],
+        onError: {
+          target: "Loading ToDos errored",
+          actions: "assignErrorToContext"
+        }
+      }
+    },
+    "ToDos Loaded": {
+      on: {
+        "Create new": "Creating new ToDo",
+        Delete: "Deleting ToDo"
+      }
+    },
+    "Loading ToDos errored": {},
+    "Creating new ToDo": {
+      states: {
+        "Showing form input": {
+          on: {
+            "Form input changed": {
+              target: "Showing form input",
+              actions: "assignFormInputToContext",
+              reenter: true
+            },
+            Submit: "Saving ToDo"
+          }
+        },
+        "Saving ToDo": {
+          invoke: {
+            src: "saveTodo",
+            input: ({ context }) => ({ text: context.createNewFormInput }),
+            onDone: "#ToDo Machine.Loading ToDos",
+            onError: {
+              target: "Showing form input",
+              actions: "assignErrorToContext"
+            }
+          }
+        }
+      },
+      initial: "Showing form input"
+    },
+    "Deleting ToDo": {
+      invoke: {
+        src: "deleteTodo",
+        input: ({ event }) => event.todo,
+        onDone: "Loading ToDos",
+        onError: {
+          target: "Deleting Errored",
+          actions: "assignErrorToContext"
+        }
+      }
+    },
+    "Deleting Errored": {
+      after: {
+        "2500": "ToDos Loaded"
+      },
+
+      on: {
+        "Speed Up": "ToDos Loaded"
+      }
+    }
+  },
+},
+  {
+    actions: {
+      assignTodosToContext: assign({ todos: ({ event }) => event.output }),
+      assignErrorToContext: assign({ error: ({ event }) =>  typeof event.error === "string" ? event.error : event.error?.message ?? "Unknown error" }),
+      assignFormInputToContext: assign({ createNewFormInput: ({ event }) =>  event.value })
+    },
+    guards: {
+      "Has ToDos": ({ event }) => event.output.length > 0
+    }
+  }
+);
+
+export default todoAppMachine;

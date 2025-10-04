@@ -24,3 +24,230 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ==========================
+   ToDo UI (namespaced)
+   ========================== */
+
+.todo-page {
+  min-height: 100svh;
+  background: linear-gradient(180deg, #0e0e0e, #1b1b1b);
+  color: #e5e7eb;
+  padding: 32px;
+}
+
+.todo-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.todo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.todo-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  margin: 0;
+}
+
+.todo-state-badge {
+  background: #eb812a;
+  color: #04222a;
+  padding: 9px 13px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.todo-card {
+  background: rgba(42, 49, 63, 0.75);
+  border: 3px solid rgba(148, 163, 184, 0.25);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.todo-section-title {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #f0f2ff;
+}
+
+ol.todo-list {
+  list-style: decimal inside;
+  margin: 0;
+  padding: 0;
+}
+
+.todo-li {
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.todo-li:last-child {
+  border-bottom: none;
+}
+
+.todo-li-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.todo-text {
+  color: #f8fafc;
+  font-size: 16px;
+}
+
+.todo-delete-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  line-height: 1;
+  transition: background 0.15s ease-in-out, transform 0.05s ease-in-out;
+}
+
+.todo-delete-btn:hover {
+  background: #dc2626;
+}
+
+.todo-delete-btn:active {
+  transform: translateY(1px);
+}
+
+.todo-delete-btn:focus-visible {
+  outline: 2px solid #fecaca;
+  outline-offset: 2px;
+}
+
+.todo-add-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.todo-primary-btn {
+  background: #22c55e;
+  color: #06220c;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 800;
+  transition: background 0.15s ease-in-out, transform 0.05s ease-in-out;
+}
+
+.todo-primary-btn:hover {
+  background: #16a34a;
+}
+
+.todo-primary-btn:active {
+  transform: translateY(1px);
+}
+
+.todo-primary-btn:focus-visible {
+  outline: 2px solid #bbf7d0;
+  outline-offset: 2px;
+}
+
+.todo-error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fecaca;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+.todo-retry-btn {
+  background: #f59e0b;
+  color: #1b1300;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 800;
+  margin-top: 10px;
+  transition: background 0.15s ease-in-out, transform 0.05s ease-in-out;
+}
+
+.todo-retry-btn:hover {
+  background: #d97706;
+}
+
+.todo-retry-btn:active {
+  transform: translateY(1px);
+}
+
+.todo-retry-btn:focus-visible {
+  outline: 2px solid #fde68a;
+  outline-offset: 2px;
+}
+
+.todo-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #374151;
+  background: #0b1020;
+  color: #fff;
+  outline: none;
+  font-size: 16px;
+  transition: box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.todo-input::placeholder {
+  color: #9ca3af;
+}
+
+.todo-input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
+}
+
+.todo-helper {
+  margin-top: 8px;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.todo-loading-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #93c5fd;
+  font-style: italic;
+}
+
+.todo-spinner {
+  width: 16px;
+  height: 16px;
+  border: 3px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #93c5fd;
+  border-radius: 50%;
+  animation: todo-spin 1s linear infinite;
+}
+
+@keyframes todo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .todo-spinner {
+    animation: none;
+  }
+}
